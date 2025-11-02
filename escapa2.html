@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comprobar si se puede incrustar un juego | EscapadelProfe</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  max-width: 600px;
+  margin: 30px auto;
+  text-align: center;
+  position: relative;
+  background-color: #fafafa;
+  overflow-x: hidden;
+}
+
+input, button {
+  padding: 10px;
+  margin: 5px;
+  width: 90%;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #45a049;
+}
+
+#resultado {
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+/* Iframe oculto para las pruebas */
+#iframePrueba {
+  display: none;
+  width: 1px;
+  height: 1px;
+  border: none;
+}
+
+/* Marca de agua */
+body::after {
+  content: "EscapadelProfe";
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-size: 18px;
+  color: rgba(0, 0, 0, 0.15);
+  font-weight: bold;
+  user-select: none;
+  pointer-events: none;
+  transform: rotate(-10deg);
+}
+</style>
+</head>
+<body>
+<h2>Comprobar si se puede incrustar un juego</h2>
+<input type="url" id="urlJuego" placeholder="Pega aquí el enlace del juego" required>
+<button id="comprobar">Comprobar</button>
+
+<div id="resultado"></div>
+<iframe id="iframePrueba"></iframe>
+
+<script>
+document.getElementById('comprobar').addEventListener('click', function() {
+  const url = document.getElementById('urlJuego').value.trim();
+  const iframe = document.getElementById('iframePrueba');
+  const resultado = document.getElementById('resultado');
+  
+  if (!url) {
+    resultado.textContent = "Por favor, introduce un enlace válido.";
+    resultado.style.color = "orange";
+    return;
+  }
+
+  resultado.textContent = "Comprobando...";
+  resultado.style.color = "black";
+
+  iframe.src = url;
+  
+  let timeout = setTimeout(() => {
+    resultado.textContent = "❌ No se puede incrustar este juego. Prueba con otra web.";
+    resultado.style.color = "red";
+  }, 5000);
+
+  iframe.onload = function() {
+    clearTimeout(timeout);
+    resultado.textContent = "✅ Este juego se puede añadir a EscapadelProfe.";
+    resultado.style.color = "green";
+    iframe.src = ""; // se limpia para no abrir el juego
+  };
+
+  iframe.onerror = function() {
+    clearTimeout(timeout);
+    resultado.textContent = "❌ Error al cargar el juego. No se puede incrustar.";
+    resultado.style.color = "red";
+  };
+});
+</script>
+</body>
+</html>
